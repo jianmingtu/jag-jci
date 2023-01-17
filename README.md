@@ -1,1 +1,1 @@
-# jag-ccd-jc-interface
+# jag-jci (JC Interface)
