@@ -42,7 +42,7 @@
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>ccd-common-models</artifactId>
+            <artifactId>jci-common-models</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

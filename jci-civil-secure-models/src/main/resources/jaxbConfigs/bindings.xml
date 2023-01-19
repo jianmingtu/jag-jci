@@ -8,7 +8,7 @@
 
     <jxb:bindings collectionType="java.util.LinkedList" choiceContentProperty="true" schemaLocation="../xsdSchemas/civilFileContentSecure.xsd">
         <jxb:schemaBindings>
-            <jxb:package name="ca.bc.gov.open.ccd.civil.secure" />
+            <jxb:package name="ca.bc.gov.open.jci.civil.secure" />
         </jxb:schemaBindings>
         <jxb:bindings>
 

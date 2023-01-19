@@ -1,4 +1,4 @@
-name: ZAP Scanner for CCD Secure APIs
+name: ZAP Scanner for JCI Secure APIs
 on:
   workflow_dispatch:
 

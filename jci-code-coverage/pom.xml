@@ -15,31 +15,31 @@
 <!--        These are being detected as duplicates but they are all needed for code coverage to be generated correctly -->
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>ccd-common-models</artifactId>
+            <artifactId>jci-common-models</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>ccd-civil-models</artifactId>
+            <artifactId>jci-civil-models</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>ccd-civil-secure-models</artifactId>
+            <artifactId>jci-civil-secure-models</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>ccd-court-list-models</artifactId>
+            <artifactId>jci-court-list-models</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>ccd-court-list-secure-models</artifactId>
+            <artifactId>jci-court-list-secure-models</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

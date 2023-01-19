@@ -2,7 +2,7 @@ security:
   basic-auth:
     password: ${BASIC_AUTH_PASS}
     username: ${BASIC_AUTH_USER}
-ccd:
+jci:
   form-param-idx: ${FORM_PARAM_IDX}
   host: ${ORDS_HOST}
   generic-agen-id:  ${GENERIC_AGENCY_ID}

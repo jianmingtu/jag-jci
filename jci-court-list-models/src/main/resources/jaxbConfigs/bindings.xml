@@ -8,7 +8,7 @@
 
     <jxb:bindings schemaLocation="../xsdSchemas/courtList.xsd">
         <jxb:schemaBindings>
-            <jxb:package name="ca.bc.gov.open.ccd.court.one"/>
+            <jxb:package name="ca.bc.gov.open.jci.court.one"/>
         </jxb:schemaBindings>
         <jxb:bindings>
             <namespace:prefix name="ser-root"/>
