@@ -84,18 +84,18 @@ jobs:
         run: mvn -ntp verify
 
       - name: Fix Jacoco Report Format for CC
-        run: sed -e 's/<[\/]\?group[^>]*>//g' ccd-code-coverage/target/site/jacoco-aggregate/jacoco.xml > ccd-code-coverage/target/site/jacoco-aggregate/jacoco-codeclimatecompat.xml
+        run: sed -e 's/<[\/]\?group[^>]*>//g' jci-code-coverage/target/site/jacoco-aggregate/jacoco.xml > jci-code-coverage/target/site/jacoco-aggregate/jacoco-codeclimatecompat.xml
 
         # Formatting the Code Coverage Report
       - name: Format the coverage report
-        run: JACOCO_SOURCE_PATH="ccd-civil-models/target/generated-sources/xjc ccd-civil-secure-models/target/generated-sources/xjc ccd-common-models/target/generated-sources/xjc ccd-common-models/src/main/java ccd-court-list-models/target/generated-sources/xjc ccd-court-list-secure-models/target/generated-sources/xjc jag-ccd-application/src/main/java" ./cc-test-reporter format-coverage ccd-code-coverage/target/site/jacoco-aggregate/jacoco-codeclimatecompat.xml --input-type jacoco -o ./target/site/jacoco/codeclimate.json
+        run: JACOCO_SOURCE_PATH="jci-civil-models/target/generated-sources/xjc jci-civil-secure-models/target/generated-sources/xjc jci-common-models/target/generated-sources/xjc jci-common-models/src/main/java jci-court-list-models/target/generated-sources/xjc jci-court-list-secure-models/target/generated-sources/xjc jag-jci-application/src/main/java" ./cc-test-reporter format-coverage jci-code-coverage/target/site/jacoco-aggregate/jacoco-codeclimatecompat.xml --input-type jacoco -o ./target/site/jacoco/codeclimate.json
 
 
 # Upload JSON for debugging purposes
       - name: Upload JSON for debugging purposes
         uses: actions/upload-artifact@v3.1.1
         with:
-          name: ccd-coverage-report
+          name: jci-coverage-report
           path: ./target/site/jacoco/codeclimate.json
 
       # Upload total coverage report to Code Climate

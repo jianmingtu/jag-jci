@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>ccd-code-coverage</artifactId>
+    <artifactId>jci-code-coverage</artifactId>
 
     <dependencies>
 <!--        These are being detected as duplicates but they are all needed for code coverage to be generated correctly -->

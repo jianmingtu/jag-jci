@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: ${COMPONENT_NAME}
-  description: Deployment template for the JAG-CCD-TESTS
+  description: Deployment template for the JAG-JCI-TESTS
   
 labels:
   app: ${APP_NAME}
@@ -14,12 +14,12 @@ parameters:
 - name: APP_NAME
   description: The application name that each component is part of
   required: false
-  value: jag-ccd
+  value: jag-jci
 
 - name: COMPONENT_NAME
   description: The application name that each component is part of
   required: false
-  value: jag-ccd-tests
+  value: jag-jci-tests
   
 - name: OC_NAMESPACE
   description: The OpenShift namespace prefix
@@ -49,14 +49,14 @@ parameters:
   
 objects:
 
-### JAG-CCD-TESTS Deployment Config ###
+### JAG-JCI-TESTS Deployment Config ###
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
     name: ${COMPONENT_NAME}
     namespace: ${OC_NAMESPACE}-${OC_ENV}
     annotations:
-      app.openshift.io/connects-to: 'jag-ccd-1-1, jag-ccd-1-2'
+      app.openshift.io/connects-to: 'jag-jci-1-1, jag-jci-1-2'
 
   spec:
     completionDeadlineSeconds: 1200
@@ -83,37 +83,37 @@ objects:
             - name: BASIC_AUTH_USER
               valueFrom:
                 secretKeyRef:
-                  name: ccd-application-secrets
+                  name: jci-application-secrets
                   key: BASIC_AUTH_USER
             - name: BASIC_AUTH_USER_SECURE
               valueFrom:
                 secretKeyRef:
-                  name: ccd-application-secrets
+                  name: jci-application-secrets
                   key: BASIC_AUTH_USER_SECURE
             - name: BASIC_AUTH_PASS
               valueFrom:
                 secretKeyRef:
-                  name: ccd-application-secrets
+                  name: jci-application-secrets
                   key: BASIC_AUTH_PASS
             - name: BASIC_AUTH_PASS_SECURE
               valueFrom:
                 secretKeyRef:
-                  name: ccd-application-secrets
+                  name: jci-application-secrets
                   key: BASIC_AUTH_PASS_SECURE
             - name: SPRING_PROFILES_ACTIVE
               valueFrom:
                 secretKeyRef:
-                  name: ccd-application-secrets
+                  name: jci-application-secrets
                   key: SPRING_PROFILE
             - name: API_HOST
               valueFrom:
                 secretKeyRef:
-                  name: ccd-application-secrets
+                  name: jci-application-secrets
                   key: API_HOST
             - name: API_HOST_SECURE
               valueFrom:
                 secretKeyRef:
-                  name: ccd-application-secrets
+                  name: jci-application-secrets
                   key: API_HOST_SECURE
             resources:
               limits:
@@ -161,7 +161,7 @@ objects:
             name: ${COMPONENT_NAME}:${OC_ENV}
   status: {}
 
-### JAG-CCD-TESTS Service ###
+### JAG-JCI-TESTS Service ###
 - apiVersion: v1
   kind: Service
   metadata:
@@ -178,7 +178,7 @@ objects:
     sessionAffinity: None
     type: ClusterIP
 
-### JAG-CCD-TESTS Route ###
+### JAG-JCI-TESTS Route ###
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
