@@ -6,13 +6,13 @@ on:
   workflow_dispatch:
     inputs:
       app1:
-        description: 'App Name (jag-jci)'
+        description: 'App Name (jag-jci-application)'
         required: true
-        default: 'jag-jci'
+        default: 'jag-jci-application'
       app2:
-        description: 'App Name (jag-jci-secure)'
+        description: 'App Name (jag-jci-application-secure)'
         required: true
-        default: 'jag-jci-secure'
+        default: 'jag-jci-application-secure'
       imageSourceEnv:
         type: choice
         description: Image Source environment
@@ -83,9 +83,9 @@ jobs:
           openshift_token: ${{secrets.OPENSHIFT_SA_TOOLS_DEPLOYER_TOKEN_SILVER}}
           namespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE_SILVER}}
 
-        # Re-Tag latest dev (source) jag-jci image to other env to trigger openshift deployment via DeploymentConfig
+        # Re-Tag latest dev (source) jag-jci-application image to other env to trigger openshift deployment via DeploymentConfig
         # It also creates a tag with release version number to use it in case of rollback.
-      - name: Retag jag-jci image to release env and version - Silver
+      - name: Retag jag-jci-application image to release env and version - Silver
         env:
           appName: ${{ github.event.inputs.app1 }}
           imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
@@ -98,9 +98,9 @@ jobs:
           oc tag ${openshiftIImageRegistry}/${openshiftToolsNamespace}/${appName}:${imageSourceEnv} ${appName}:${imageTargetEnv}
           oc tag ${openshiftIImageRegistry}/${openshiftToolsNamespace}/${appName}:${imageTargetEnv} ${appName}:${releaseVersion}.${gitSha}
 
-        # Re-Tag latest dev (source) jag-jci-secure image to other env to trigger openshift deployment via DeploymentConfig
+        # Re-Tag latest dev (source) jag-jci-application-secure image to other env to trigger openshift deployment via DeploymentConfig
         # It also creates a tag with release version number to use it in case of rollback.
-      - name: Retag jag-jci-secure image to release env and version - Silver
+      - name: Retag jag-jci-application-secure image to release env and version - Silver
         env:
           appName: ${{ github.event.inputs.app2 }}
           imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
@@ -124,8 +124,8 @@ jobs:
           openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN_SILVER}}
           namespace: ${OPENSHIFT_NAMESPACE}
 
-        # Labels the deployment config of the jag-jci application with release version number to spin up the pods labelled in same version - Silver
-      - name: Labelling jag-jci DC to release version - Silver
+        # Labels the deployment config of the jag-jci-application application with release version number to spin up the pods labelled in same version - Silver
+      - name: Labelling jag-jci-application DC to release version - Silver
         env:
           releaseVersion: ${{ env.releaseVersion }}
           appName: ${{ github.event.inputs.app1 }}
@@ -133,16 +133,16 @@ jobs:
         run: |
           oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
-        # Wait to jag-jci DC rollout to get completed before proceeding next stage - Silver
-      - name: Wait for jag-jci DC rollout - Silver
+        # Wait to jag-jci-application DC rollout to get completed before proceeding next stage - Silver
+      - name: Wait for jag-jci-application DC rollout - Silver
         env:
           appName: ${{ github.event.inputs.app1 }}
           openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.imageTargetEnv }}
         run: |
           oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
-        # Labels the deployment config of the jag-jci-secure application with release version number to spin up the pods labelled in same version - Silver
-      - name: Labelling jag-jci-secure DC to release version - Silver
+        # Labels the deployment config of the jag-jci-application-secure application with release version number to spin up the pods labelled in same version - Silver
+      - name: Labelling jag-jci-application-secure DC to release version - Silver
         env:
           releaseVersion: ${{ env.releaseVersion }}
           appName: ${{ github.event.inputs.app2 }}
@@ -150,8 +150,8 @@ jobs:
         run: |
           oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
-        # Wait to jag-jci-secure DC rollout to get completed before proceeding next stage - Silver
-      - name: Wait for jag-jci-secure DC rollout - Silver
+        # Wait to jag-jci-application-secure DC rollout to get completed before proceeding next stage - Silver
+      - name: Wait for jag-jci-application-secure DC rollout - Silver
         env:
           appName: ${{ github.event.inputs.app2 }}
           openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.imageTargetEnv }}
@@ -169,9 +169,9 @@ jobs:
       #     openshift_token: ${{secrets.OPENSHIFT_SA_TOOLS_DEPLOYER_TOKEN}}
       #     namespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}
         
-      #   # Re-Tag latest dev (source) jag-jci image to other env to trigger openshift deployment via DeploymentConfig
+      #   # Re-Tag latest dev (source) jag-jci-application image to other env to trigger openshift deployment via DeploymentConfig
       #   # It also creates a tag with release version number to use it in case of rollback..
-      # - name: Retag jag-jci image to release env and version - Kamloops (OC PROD)
+      # - name: Retag jag-jci-application image to release env and version - Kamloops (OC PROD)
       #   env:
       #     appName: ${{ github.event.inputs.app1 }}
       #     imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
@@ -184,9 +184,9 @@ jobs:
       #     oc tag ${openshiftIImageRegistry}/${openshiftToolsNamespace}/${appName}:${imageSourceEnv} ${appName}:${imageTargetEnv}
       #     oc tag ${openshiftIImageRegistry}/${openshiftToolsNamespace}/${appName}:${imageTargetEnv} ${appName}:${releaseVersion}.${gitSha}
 
-      # # Re-Tag latest dev (source) jag-jci-secure image to other env to trigger openshift deployment via DeploymentConfig
+      # # Re-Tag latest dev (source) jag-jci-application-secure image to other env to trigger openshift deployment via DeploymentConfig
       #   # It also creates a tag with release version number to use it in case of rollback..
-      # - name: Retag jag-jci-secure image to release env and version - Kamloops (OC PROD)
+      # - name: Retag jag-jci-application-secure image to release env and version - Kamloops (OC PROD)
       #   env:
       #     appName: ${{ github.event.inputs.app2 }}
       #     imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
@@ -210,8 +210,8 @@ jobs:
       #     openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN}}
       #     namespace: ${OPENSHIFT_NAMESPACE}
         
-      #   # Labels the deployment config of the jag-jci application with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
-      # - name: Labelling jag-jci DC to release version - Kamloops (OC PROD)
+      #   # Labels the deployment config of the jag-jci-application application with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
+      # - name: Labelling jag-jci-application DC to release version - Kamloops (OC PROD)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{ github.event.inputs.app1 }}
@@ -219,8 +219,8 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
-      #   # Labels the deployment config of the jag-jci-secure application with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
-      # - name: Labelling jag-jci-secure DC to release version - Kamloops (OC PROD)
+      #   # Labels the deployment config of the jag-jci-application-secure application with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
+      # - name: Labelling jag-jci-application-secure DC to release version - Kamloops (OC PROD)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{ github.event.inputs.app2 }}
@@ -228,16 +228,16 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
       
-      #   # Wait to jag-jci DC rollout to get completed before proceeding next stage - Kamloops (OC PROD)
-      # - name: Wait for jag-jci DC rollout - Kamloops (OC PROD)
+      #   # Wait to jag-jci-application DC rollout to get completed before proceeding next stage - Kamloops (OC PROD)
+      # - name: Wait for jag-jci-application DC rollout - Kamloops (OC PROD)
       #   env:
       #     appName: ${{ github.event.inputs.app1 }}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
       #   run: |
       #     oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
-      #   # Wait to jag-jci-secure DC rollout to get completed before proceeding next stage - Kamloops (OC PROD)
-      # - name: Wait for jag-jci-secure DC rollout - Kamloops (OC PROD)
+      #   # Wait to jag-jci-application-secure DC rollout to get completed before proceeding next stage - Kamloops (OC PROD)
+      # - name: Wait for jag-jci-application-secure DC rollout - Kamloops (OC PROD)
       #   env:
       #     appName: ${{ github.event.inputs.app2 }}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
@@ -255,9 +255,9 @@ jobs:
       #     openshift_token: ${{secrets.OPENSHIFT_SA_TOOLS_DEPLOYER_TOKEN_DR}}
       #     namespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}
         
-      #   # Re-Tag latest dev (source) jag-jci image to other env to trigger openshift deployment via DeploymentConfig
+      #   # Re-Tag latest dev (source) jag-jci-application image to other env to trigger openshift deployment via DeploymentConfig
       #   # It also creates a tag with release version number to use it in case of rollback.
-      # - name: Retag jag-jci image to release env and version - Calgary (OC DR)
+      # - name: Retag jag-jci-application image to release env and version - Calgary (OC DR)
       #   env:
       #     appName: ${{ github.event.inputs.app1 }}
       #     imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
@@ -270,9 +270,9 @@ jobs:
       #     oc tag ${openshiftIImageRegistry}/${openshiftToolsNamespace}/${appName}:${imageSourceEnv} ${appName}:${imageTargetEnv}
       #     oc tag ${openshiftIImageRegistry}/${openshiftToolsNamespace}/${appName}:${imageTargetEnv} ${appName}:${releaseVersion}.${gitSha}
 
-      #   # Re-Tag latest dev (source) jag-jci-secure image to other env to trigger openshift deployment via DeploymentConfig
+      #   # Re-Tag latest dev (source) jag-jci-application-secure image to other env to trigger openshift deployment via DeploymentConfig
       #   # It also creates a tag with release version number to use it in case of rollback.
-      # - name: Retag jag-jci-secure image to release env and version - Calgary (OC DR)
+      # - name: Retag jag-jci-application-secure image to release env and version - Calgary (OC DR)
       #   env:
       #     appName: ${{ github.event.inputs.app2 }}
       #     imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
@@ -296,8 +296,8 @@ jobs:
       #     openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN_DR}}
       #     namespace: ${OPENSHIFT_NAMESPACE}
         
-      #   # Labels the deployment config of the jag-jci application with release version number to spin up the pods labelled in same version - Calgary (OC DR)
-      # - name: Labelling jag-jci DC to release version - Calgary (OC DR)
+      #   # Labels the deployment config of the jag-jci-application with release version number to spin up the pods labelled in same version - Calgary (OC DR)
+      # - name: Labelling jag-jci-application DC to release version - Calgary (OC DR)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{ github.event.inputs.app1 }}
@@ -305,8 +305,8 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
-      #   # Labels the deployment config of the jag-jci-secure application with release version number to spin up the pods labelled in same version - Calgary (OC DR)
-      # - name: Labelling jag-jci-secure DC to release version - Calgary (OC DR)
+      #   # Labels the deployment config of the jag-jci-application-secure application with release version number to spin up the pods labelled in same version - Calgary (OC DR)
+      # - name: Labelling jag-jci-application-secure DC to release version - Calgary (OC DR)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{ github.event.inputs.app2 }}
@@ -314,16 +314,16 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
-      #   # Wait to jag-jci DC rollout to get completed before proceeding next stage - Calgary (OC DR)
-      # - name: Wait for jag-jci DC rollout - Calgary (OC DR)
+      #   # Wait to jag-jci-application DC rollout to get completed before proceeding next stage - Calgary (OC DR)
+      # - name: Wait for jag-jci-application DC rollout - Calgary (OC DR)
       #   env:
       #     appName: ${{ github.event.inputs.app1 }}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
       #   run: |
       #     oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
-      #   # Wait to jag-jci-secure DC rollout to get completed before proceeding next stage - Calgary (OC DR)
-      # - name: Wait for jag-jci-secure DC rollout - Calgary (OC DR)
+      #   # Wait to jag-jci-application-secure DC rollout to get completed before proceeding next stage - Calgary (OC DR)
+      # - name: Wait for jag-jci-application-secure DC rollout - Calgary (OC DR)
       #   env:
       #     appName: ${{ github.event.inputs.app2 }}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
