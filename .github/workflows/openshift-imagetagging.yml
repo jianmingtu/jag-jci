@@ -76,12 +76,12 @@ jobs:
       - name: Authenticate OC Tools SA - Silver
         uses: redhat-actions/oc-login@v1
         env:
-          OPENSHIFT_NAMESPACE: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE_SILVER}}
+          OPENSHIFT_NAMESPACE: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}
           OPENSHIFT_USER: ${{secrets.OPENSHIFT_SA_TOOLS_DEPLOYER_NAME}}
         with:
-          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL_SILVER}}
-          openshift_token: ${{secrets.OPENSHIFT_SA_TOOLS_DEPLOYER_TOKEN_SILVER}}
-          namespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE_SILVER}}
+          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
+          openshift_token: ${{secrets.OPENSHIFT_SA_TOOLS_DEPLOYER_TOKEN}}
+          namespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}
 
         # Re-Tag latest dev (source) jag-jci-application image to other env to trigger openshift deployment via DeploymentConfig
         # It also creates a tag with release version number to use it in case of rollback.
@@ -90,7 +90,7 @@ jobs:
           appName: ${{ github.event.inputs.app1 }}
           imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
           imageTargetEnv: ${{ github.event.inputs.imageTargetEnv }}
-          openshiftToolsNamespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE_SILVER}}
+          openshiftToolsNamespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}
           openshiftIImageRegistry: ${{secrets.OPENSHIFT_INTERNAL_REPOSITORY}}
           releaseVersion: ${{ env.releaseVersion }}
           gitSha: ${{ env.gitsha }}
@@ -105,7 +105,7 @@ jobs:
           appName: ${{ github.event.inputs.app2 }}
           imageSourceEnv: ${{ github.event.inputs.imageSourceEnv }}
           imageTargetEnv: ${{ github.event.inputs.imageTargetEnv }}
-          openshiftToolsNamespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE_SILVER}}
+          openshiftToolsNamespace: ${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}
           openshiftIImageRegistry: ${{secrets.OPENSHIFT_INTERNAL_REPOSITORY}}
           releaseVersion: ${{ env.releaseVersion }}
           gitSha: ${{ env.gitsha }}
@@ -117,11 +117,11 @@ jobs:
       - name: Authenticate OC Env Specific SA - Silver
         uses: redhat-actions/oc-login@v1
         env:
-          OPENSHIFT_NAMESPACE: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.imageTargetEnv }}
+          OPENSHIFT_NAMESPACE: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
           OPENSHIFT_USER: ${{secrets.OPENSHIFT_SA_Env_DEPLOYER_NAME}}
         with:
-          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL_SILVER}}
-          openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN_SILVER}}
+          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
+          openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN}}
           namespace: ${OPENSHIFT_NAMESPACE}
 
         # Labels the deployment config of the jag-jci-application application with release version number to spin up the pods labelled in same version - Silver
@@ -129,7 +129,7 @@ jobs:
         env:
           releaseVersion: ${{ env.releaseVersion }}
           appName: ${{ github.event.inputs.app1 }}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.imageTargetEnv }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
         run: |
           oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
@@ -137,7 +137,7 @@ jobs:
       - name: Wait for jag-jci-application DC rollout - Silver
         env:
           appName: ${{ github.event.inputs.app1 }}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.imageTargetEnv }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
         run: |
           oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
@@ -146,7 +146,7 @@ jobs:
         env:
           releaseVersion: ${{ env.releaseVersion }}
           appName: ${{ github.event.inputs.app2 }}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.imageTargetEnv }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
         run: |
           oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
@@ -154,7 +154,7 @@ jobs:
       - name: Wait for jag-jci-application-secure DC rollout - Silver
         env:
           appName: ${{ github.event.inputs.app2 }}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.imageTargetEnv }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.imageTargetEnv }}
         run: |
           oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
