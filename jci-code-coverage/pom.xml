@@ -45,13 +45,13 @@
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>jag-jci-application-1.1</artifactId>
+            <artifactId>jag-jci-application</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>ca.bc.gov.open</groupId>
-            <artifactId>jag-jci-application-1.2</artifactId>
+            <artifactId>jag-jci-application-secure</artifactId>
             <version>1.0</version>
             <scope>compile</scope>
         </dependency>

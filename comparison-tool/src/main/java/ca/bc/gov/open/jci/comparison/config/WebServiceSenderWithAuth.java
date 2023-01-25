@@ -1,4 +1,4 @@
-package ca.bc.gov.open.jci.comparison11.config;
+package ca.bc.gov.open.jci.comparison.config;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;

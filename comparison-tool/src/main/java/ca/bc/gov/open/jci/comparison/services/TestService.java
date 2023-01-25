@@ -1,4 +1,4 @@
-package ca.bc.gov.open.jci.comparison11.services;
+package ca.bc.gov.open.jci.comparison.services;
 
 import ca.bc.gov.open.jci.civil.GetCivilFileContent;
 import ca.bc.gov.open.jci.civil.GetCivilFileContentResponse;
@@ -12,7 +12,7 @@ import ca.bc.gov.open.jci.common.document.GetDocumentResponse;
 import ca.bc.gov.open.jci.common.rop.report.GetROPReport;
 import ca.bc.gov.open.jci.common.rop.report.GetROPReportResponse;
 import ca.bc.gov.open.jci.common.rop.report.Rop;
-import ca.bc.gov.open.jci.comparison11.config.WebServiceSenderWithAuth;
+import ca.bc.gov.open.jci.comparison.config.WebServiceSenderWithAuth;
 import ca.bc.gov.open.jci.court.one.GetCrtList;
 import ca.bc.gov.open.jci.court.one.GetCrtListResponse;
 import ca.bc.gov.open.jci.models.serializers.InstantSoapConverter;
@@ -68,7 +68,7 @@ public class TestService {
     private Instant dtm = Instant.now();
 
     private PrintWriter fileOutput;
-    private static String outputDir = "comparison-tool-1.1/results/";
+    private static String outputDir = "comparison-tool/results/";
 
     private int overallDiff = 0;
     private int diffCounter = 0;

@@ -1,6 +1,6 @@
-package ca.bc.gov.open.jci.comparison11;
+package ca.bc.gov.open.jci.comparison;
 
-import ca.bc.gov.open.jci.comparison11.services.TestService;
+import ca.bc.gov.open.jci.comparison.services.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
