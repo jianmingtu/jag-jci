@@ -8,10 +8,10 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>jag-jci-application-1.1</artifactId>
+    <artifactId>jag-jci-application</artifactId>
     <version>1.0</version>
-    <name>jag-jci-application-1.1</name>
-    <description>jag-jci-application-1.1</description>
+    <name>jag-jci-application</name>
+    <description>jag-jci-application</description>
     <properties>
         <default-package>ca.bc.gov.open.ccd</default-package>
         <java.version>11</java.version>
@@ -222,7 +222,7 @@
     </dependencies>
 
     <build>
-        <finalName>jci-application-1.1</finalName>
+        <finalName>jci-application</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

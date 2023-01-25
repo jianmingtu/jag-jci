@@ -8,10 +8,10 @@
         <version>1.0.0</version>
     </parent>
 
-    <artifactId>jag-jci-application-1.2</artifactId>
+    <artifactId>jag-jci-application-secure</artifactId>
     <version>1.0</version>
-    <name>jag-jci-application-1.2</name>
-    <description>jag-jci-application-1.2</description>
+    <name>jag-jci-application-secure</name>
+    <description>jag-jci-application-secure</description>
     <properties>
         <default-package>ca.bc.gov.open.ccd</default-package>
         <java.version>11</java.version>
@@ -223,7 +223,7 @@
     </dependencies>
 
     <build>
-        <finalName>jci-application-1.2</finalName>
+        <finalName>jci-application-secure</finalName>
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>

@@ -27,8 +27,8 @@
     </repositories>
 
     <modules>
-        <module>jag-jci-application-1.1</module>
-        <module>jag-jci-application-1.2</module>
+        <module>jag-jci-application</module>
+        <module>jag-jci-application-secure</module>
         <module>jci-code-coverage</module>
         <module>jci-court-list-models</module>
         <module>jci-civil-models</module>
@@ -36,7 +36,7 @@
         <module>jci-common-models</module>
         <module>jci-court-list-secure-models</module>
         <module>AutomatedTests</module>
-        <module>comparison-tool-1.1</module>
+        <module>comparison-tool</module>
     </modules>
 
 

@@ -39,12 +39,12 @@ parameters:
 - name: ENDPOINT1
   description: The target endpoint
   required: false
-  value: jag-jci-1-1
+  value: jag-jci
 
 - name: ENDPOINT2
   description: The target endpoint
   required: false
-  value: jag-jci-1-2
+  value: jag-jci-secure
 
 - name: DNS
   description: The application name that each component is part of
@@ -116,7 +116,7 @@ objects:
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $server_name;
         proxy_pass_request_headers on;
-        proxy_pass http://jag-jci-1-1/ws;
+        proxy_pass http://jag-jci/ws;
       }
 
       location /internal/secure/ws {
@@ -132,7 +132,7 @@ objects:
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Host $server_name;
         proxy_pass_request_headers on;
-        proxy_pass http://jag-jci-1-2/ws;
+        proxy_pass http://jag-jci-secure/ws;
       }
 
       location /api/CivilFileContent {
@@ -383,11 +383,11 @@ objects:
   data:
     nginx-upstream.conf: |-
       upstream splitter-jci-11 {
-        server jag-jci-1-1;
+        server jag-jci;
       }
 
       upstream splitter-jci-12 {
-        server jag-jci-1-2;
+        server jag-jci-secure;
       }
 
 - kind: DeploymentConfig
