@@ -1,7 +1,7 @@
 security:
   basic-auth:
-    password: ${BASIC_AUTH_PASS}
-    username: ${BASIC_AUTH_USER}
+    password: ${BASIC_AUTH_PASS_SECURE}
+    username: ${BASIC_AUTH_USER_SECURE}
 jci:
   form-param-idx: ${FORM_PARAM_IDX}
   host: ${ORDS_HOST}
