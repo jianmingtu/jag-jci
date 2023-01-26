@@ -8,13 +8,13 @@ on:
   workflow_dispatch:
     inputs:
       app1:
-        description: 'App Name (jag-jci)'
+        description: 'App Name (jag-jci-application)'
         required: true
-        default: 'jag-jci'
+        default: 'jag-jci-application'
       app2:
-        description: 'App Name (jag-jci-secure)'
+        description: 'App Name (jag-jci-application-secure)'
         required: true
-        default: 'jag-jci-secure'
+        default: 'jag-jci-application-secure'
       env:
         type: choice
         description: Image Target environment
@@ -83,21 +83,21 @@ jobs:
       - name: Maven Spotless Check
         run: mvn -ntp spotless:check
 
-      #Build image jag-jci
-      - name: Build image jag-jci
+      #Build image jag-jci-application
+      - name: Build image jag-jci-application
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
           DOCKER_BUILDKIT: 1
-          CONTEXT: ./jag-jci-application-1.1
+          CONTEXT: ./jag-jci-application
         run: |
           docker build -t ${{github.event.inputs.app1}}:${{env.gitsha}} ${CONTEXT}
       
-      #Build image jag-jci-secure
-      - name: Build image jag-jci-secure
+      #Build image jag-jci-application-secure
+      - name: Build image jag-jci-application-secure
         env:
           COMPOSE_DOCKER_CLI_BUILD: 1
           DOCKER_BUILDKIT: 1
-          CONTEXT: ./jag-jci-application-1.2
+          CONTEXT: ./jag-jci-application-secure
         run: |
           docker build -t ${{github.event.inputs.app2}}:${{env.gitsha}} ${CONTEXT}
       
@@ -105,22 +105,22 @@ jobs:
       - name: Login to OpenShift Container Repository - Silver
         uses: docker/login-action@v2
         with:
-          registry: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY_SILVER}}
+          registry: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY}}
           username: ${{secrets.OPENSHIFT_SA_USERNAME}}
-          password: ${{secrets.OPENSHIFT_SA_PASSWORD_SILVER}}
+          password: ${{secrets.OPENSHIFT_SA_PASSWORD}}
   
-      #Push image jag-jci to OpenShift Image stream - Silver
+      #Push image jag-jci-application to OpenShift Image stream - Silver
       - name: Push Image jag-jci to Openshift Image Stream - Silver
         env:
-          IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY_SILVER}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE_SILVER}}/${{github.event.inputs.app1}}:${{secrets.OPENSHIFT_ENV_TAG}}
+          IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}/${{github.event.inputs.app1}}:${{secrets.OPENSHIFT_ENV_TAG}}
         run: |
           docker tag ${{github.event.inputs.app1}}:${{env.gitsha}} ${IMAGE}
           docker push ${IMAGE}
       
-      #Push image jag-jci-secure to OpenShift Image stream - Silver
+      #Push image jag-jci-application-secure to OpenShift Image stream - Silver
       - name: Push Image jag-jci-secure to Openshift Image Stream - Silver
         env:
-          IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY_SILVER}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE_SILVER}}/${{github.event.inputs.app2}}:${{secrets.OPENSHIFT_ENV_TAG}}
+          IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}/${{github.event.inputs.app2}}:${{secrets.OPENSHIFT_ENV_TAG}}
         run: |
           docker tag ${{github.event.inputs.app2}}:${{env.gitsha}} ${IMAGE}
           docker push ${IMAGE}
@@ -133,16 +133,16 @@ jobs:
       #     username: ${{secrets.OPENSHIFT_SA_USERNAME}}
       #     password: ${{secrets.OPENSHIFT_SA_PASSWORD}}
 
-      # #Push image jag-jci to OpenShift Image stream - Kamloops (OC Prod)
-      # - name: Push Image jag-jci to Openshift Image Stream - Kamloops (OC Prod)
+      # #Push image jag-jci-application to OpenShift Image stream - Kamloops (OC Prod)
+      # - name: Push Image jag-jci-application to Openshift Image Stream - Kamloops (OC Prod)
       #   env:
       #     IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}/${{github.event.inputs.app1}}:${{secrets.OPENSHIFT_ENV_TAG}}
       #   run: |
       #     docker tag ${{github.event.inputs.app1}}:${{env.gitsha}} ${IMAGE}
       #     docker push ${IMAGE}
       
-      # #Push image jag-jci-secure to OpenShift Image stream - Kamloops (OC Prod)
-      # - name: Push Image jag-jci-secure to Openshift Image Stream - Kamloops (OC Prod)
+      # #Push image jag-jci-application-secure to OpenShift Image stream - Kamloops (OC Prod)
+      # - name: Push Image jag-jci-application-secure to Openshift Image Stream - Kamloops (OC Prod)
       #   env:
       #     IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}/${{github.event.inputs.app2}}:${{secrets.OPENSHIFT_ENV_TAG}}
       #   run: |
@@ -157,16 +157,16 @@ jobs:
       #     username: ${{secrets.OPENSHIFT_SA_USERNAME}}
       #     password: ${{secrets.OPENSHIFT_SA_PASSWORD_DR}}
 
-      # #Push image jag-jci to OpenShift Image stream - Calgary (OC DR)
-      # - name: Push Image jag-jci to Openshift Image Stream - Calgary (OC DR)
+      # #Push image jag-jci-application to OpenShift Image stream - Calgary (OC DR)
+      # - name: Push Image jag-jci-application to Openshift Image Stream - Calgary (OC DR)
       #   env:
       #     IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY_DR}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}/${{github.event.inputs.app1}}:${{secrets.OPENSHIFT_ENV_TAG}}
       #   run: |
       #     docker tag ${{github.event.inputs.app1}}:${{env.gitsha}} ${IMAGE}
       #     docker push ${IMAGE}
       
-      # #Push image jag-jci-secure to OpenShift Image stream - Calgary (OC DR)
-      # - name: Push Image jag-jci-secure to Openshift Image Stream - Calgary (OC DR)
+      # #Push image jag-jci-application-secure to OpenShift Image stream - Calgary (OC DR)
+      # - name: Push Image jag-jci-application-secure to Openshift Image Stream - Calgary (OC DR)
       #   env:
       #     IMAGE: ${{secrets.OPENSHIFT_EXTERNAL_REPOSITORY_DR}}/${{secrets.OPENSHIFT_TOOLS_NAMESPACE}}/${{github.event.inputs.app2}}:${{secrets.OPENSHIFT_ENV_TAG}}
       #   run: |
@@ -177,44 +177,44 @@ jobs:
       - name: Authenticate OC Env Specific SA - Silver
         uses: redhat-actions/oc-login@v1
         env:
-          OPENSHIFT_NAMESPACE: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.env }}
+          OPENSHIFT_NAMESPACE: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
           OPENSHIFT_USER: ${{secrets.OPENSHIFT_SA_Env_DEPLOYER_NAME}}
         with:
-          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL_SILVER}}
-          openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN_SILVER}}
+          openshift_server_url: ${{secrets.OPENSHIFT_SERVER_URL}}
+          openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN}}
           namespace: ${OPENSHIFT_NAMESPACE}
 
-      # Labels the deployment config of the application jag-jci with release version number to spin up the pods labelled in same version - Silver
-      - name: Labelling DC of jag-jci to release version - Silver
+      # Labels the deployment config of the application jag-jci-application with release version number to spin up the pods labelled in same version - Silver
+      - name: Labelling DC of jag-jci-application to release version - Silver
         env:
           releaseVersion: ${{ env.releaseVersion }}
           appName: ${{github.event.inputs.app1}}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.env }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
         run: |
           oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
       
-       # Wait to DC rollout of jag-jci to get completed before proceeding next stage - Silver
-      - name: Wait for DC rollout of jag-jci - Silver
+       # Wait to DC rollout of jag-jci-application to get completed before proceeding next stage - Silver
+      - name: Wait for DC rollout of jag-jci-application - Silver
         env:
           appName: ${{github.event.inputs.app1}}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.env }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
         run: |
           oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
-      # Labels the deployment config of the application jag-jci-secure with release version number to spin up the pods labelled in same version - Silver
-      - name: Labelling DC of jag-jci-secure to release version - Silver
+      # Labels the deployment config of the application jag-jci-application-secure with release version number to spin up the pods labelled in same version - Silver
+      - name: Labelling DC of jag-jci-application-secure to release version - Silver
         env:
           releaseVersion: ${{ env.releaseVersion }}
           appName: ${{github.event.inputs.app2}}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.env }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
         run: |
           oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
 
-      # Wait to DC rollout of jag-jci-secure to get completed before proceeding next stage - Silver
-      - name: Wait for DC rollout of jag-jci-secure - Silver
+      # Wait to DC rollout of jag-jci-application-secure to get completed before proceeding next stage - Silver
+      - name: Wait for DC rollout of jag-jci-application-secure - Silver
         env:
           appName: ${{github.event.inputs.app2}}
-          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE_SILVER}}-${{ github.event.inputs.env }}
+          openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
         run: |
           oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
@@ -229,8 +229,8 @@ jobs:
       #     openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN}}
       #     namespace: ${OPENSHIFT_NAMESPACE}
         
-      # # Labels the deployment config of the application jag-jci with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
-      # - name: Labelling DC of jag-jci to release version - Kamloops (OC PROD)
+      # # Labels the deployment config of the application jag-jci-application with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
+      # - name: Labelling DC of jag-jci-application to release version - Kamloops (OC PROD)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{github.event.inputs.app1}}
@@ -238,16 +238,16 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
       
-      # # Wait to DC rollout of jag-jci to get completed before proceeding next stage - Kamloops (OC PROD)
-      # - name: Wait for DC rollout of jag-jci - Kamloops (OC PROD)
+      # # Wait to DC rollout of jag-jci-application to get completed before proceeding next stage - Kamloops (OC PROD)
+      # - name: Wait for DC rollout of jag-jci-application - Kamloops (OC PROD)
       #   env:
       #     appName: ${{github.event.inputs.app1}}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
       #   run: |
       #     oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
-      # # Labels the deployment config of the application jag-jci-secure with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
-      # - name: Labelling DC of jag-jci-secure to release version - Kamloops (OC PROD)
+      # # Labels the deployment config of the application jag-jci-application-secure with release version number to spin up the pods labelled in same version - Kamloops (OC PROD)
+      # - name: Labelling DC of jag-jci-application-secure to release version - Kamloops (OC PROD)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{github.event.inputs.app2}}
@@ -255,8 +255,8 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
       
-      # # Wait to DC rollout of jag-jci-secure to get completed before proceeding next stage - Kamloops (OC PROD)
-      # - name: Wait for DC rollout of jag-jci-secure - Kamloops (OC PROD)
+      # # Wait to DC rollout of jag-jci-application-secure to get completed before proceeding next stage - Kamloops (OC PROD)
+      # - name: Wait for DC rollout of jag-jci-application-secure - Kamloops (OC PROD)
       #   env:
       #     appName: ${{github.event.inputs.app2}}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
@@ -274,8 +274,8 @@ jobs:
       #     openshift_token: ${{secrets.OPENSHIFT_SA_ENV_DEPLOYER_TOKEN_DR}}
       #     namespace: ${OPENSHIFT_NAMESPACE}
         
-      # # Labels the deployment config of the application jag-jci with release version number to spin up the pods labelled in same version - Calgary (OC DR)
-      # - name: Labelling DC of jag-jci to release version - Calgary (OC DR)
+      # # Labels the deployment config of the application jag-jci-application with release version number to spin up the pods labelled in same version - Calgary (OC DR)
+      # - name: Labelling DC of jag-jci-application to release version - Calgary (OC DR)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{github.event.inputs.app1}}
@@ -283,16 +283,16 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
       
-      # # Wait to DC rollout of jag-jci to get completed before proceeding next stage - Calgary (OC DR)
-      # - name: Wait for DC rollout of jag-jci - Calgary (OC DR)
+      # # Wait to DC rollout of jag-jci-application to get completed before proceeding next stage - Calgary (OC DR)
+      # - name: Wait for DC rollout of jag-jci-application - Calgary (OC DR)
       #   env:
       #     appName: ${{github.event.inputs.app1}}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
       #   run: |
       #     oc rollout status -n ${openshiftEnvNamespace} dc/${appName} --watch
 
-      # # Labels the deployment config of the application jag-jci-secure with release version number to spin up the pods labelled in same version - Calgary (OC DR)
-      # - name: Labelling DC of jag-jci-secure to release version - Calgary (OC DR)
+      # # Labels the deployment config of the application jag-jci-application-secure with release version number to spin up the pods labelled in same version - Calgary (OC DR)
+      # - name: Labelling DC of jag-jci-application-secure to release version - Calgary (OC DR)
       #   env:
       #     releaseVersion: ${{ env.releaseVersion }}
       #     appName: ${{github.event.inputs.app2}}
@@ -300,8 +300,8 @@ jobs:
       #   run: |
       #     oc patch dc ${appName} -n ${openshiftEnvNamespace} --patch '{"spec":{"template":{"metadata":{"labels":{"version":"${{ env.releaseVersion }}.${{ env.gitsha }}"}}}}}'
       
-      # # Wait to DC rollout of jag-jci-secure to get completed before proceeding next stage - Calgary (OC DR)
-      # - name: Wait for DC rollout of jag-jci-secure - Calgary (OC DR)
+      # # Wait to DC rollout of jag-jci-application-secure to get completed before proceeding next stage - Calgary (OC DR)
+      # - name: Wait for DC rollout of jag-jci-application-secure - Calgary (OC DR)
       #   env:
       #     appName: ${{github.event.inputs.app2}}
       #     openshiftEnvNamespace: ${{secrets.OPENSHIFT_LICENSE_PLATE}}-${{ github.event.inputs.env }}
