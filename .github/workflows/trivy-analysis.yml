@@ -45,7 +45,7 @@ jobs:
           DOCKER_BUILDKIT: 1
           CONTEXT: ./jag-jci-application
         run: |
-          docker build -t docker.io/jci/jag-jci:${{ github.sha }} ${CONTEXT}
+          docker build -t docker.io/jci/jag-jci-application:${{ github.sha }} ${CONTEXT}
 
       #Run Vulnerability Scan usinig Trivy scanner
       - name: Run Trivy vulnerability scanner for jag-jci-application image
