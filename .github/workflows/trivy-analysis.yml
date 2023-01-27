@@ -58,6 +58,7 @@ jobs:
           exit-code: 0
           ignore-unfixed: true
           severity: HIGH,CRITICAL
+          timeout: 15m
       
       - name: Build image jag-jci-application-secure from Dockerfile
         env:
@@ -78,6 +79,7 @@ jobs:
           exit-code: 0
           ignore-unfixed: true
           severity: HIGH,CRITICAL
+          timeout: 15m
 
       #Upload results to the Github security tab.
       - name: Upload Trivy scan results to GitHub Security tab
