@@ -22,7 +22,7 @@ jobs:
           format: soap
           docker_name: 'owasp/zap2docker-stable'
           issue_title: 'ZAP Scan Report - CivilFileContent Secure API'
-          target: '${{ secrets.JAG_CCD_UnSecureAPI_RouteUrl }}/ws/CCD.Source.CivilFileContent.ws:CivilFileContentSecure?WSDL'
+          target: '${{ secrets.JAG_JCI_SecureAPI_RouteUrl }}/ws/CCD.Source.CivilFileContent.ws:CivilFileContentSecure?WSDL'
           fail_action: false
           cmd_options: '-c "zaprules.conf" -S -z "-configFile /zap/wrk/zapoptions_secureapi.prop"'
       
@@ -33,7 +33,7 @@ jobs:
           format: soap
           docker_name: 'owasp/zap2docker-stable'
           issue_title: 'ZAP Scan Report - CodeValues Secure API'
-          target: '${{ secrets.JAG_CCD_UnSecureAPI_RouteUrl }}/ws/CCD.Source.CodeValues.ws.provider:CodeValuesSecure?WSDL'
+          target: '${{ secrets.JAG_JCI_SecureAPI_RouteUrl }}/ws/CCD.Source.CodeValues.ws.provider:CodeValuesSecure?WSDL'
           fail_action: false
           cmd_options: '-c "zaprules.conf" -S -z "-configFile /zap/wrk/zapoptions_secureapi.prop"'
       
@@ -44,7 +44,7 @@ jobs:
           format: soap
           docker_name: 'owasp/zap2docker-stable'
           issue_title: 'ZAP Scan Report - CourtList Secure API'
-          target: '${{ secrets.JAG_CCD_UnSecureAPI_RouteUrl }}/ws/CCD.Source.CourtLists.ws.provider:CourtListSecure?WSDL'
+          target: '${{ secrets.JAG_JCI_SecureAPI_RouteUrl }}/ws/CCD.Source.CourtLists.ws.provider:CourtListSecure?WSDL'
           fail_action: false
           cmd_options: '-c "zaprules.conf" -S -z "-configFile /zap/wrk/zapoptions_secureapi.prop"'
       
@@ -55,7 +55,7 @@ jobs:
           format: soap
           docker_name: 'owasp/zap2docker-stable'
           issue_title: 'ZAP Scan Report - CriminalFileContent Secure API'
-          target: '${{ secrets.JAG_CCD_UnSecureAPI_RouteUrl }}/ws/CCD.Source.CriminalFileContent.ws.provider:CriminalFileContentSecure?WSDL'
+          target: '${{ secrets.JAG_JCI_SecureAPI_RouteUrl }}/ws/CCD.Source.CriminalFileContent.ws.provider:CriminalFileContentSecure?WSDL'
           fail_action: false
           cmd_options: '-c "zaprules.conf" -S -z "-configFile /zap/wrk/zapoptions_secureapi.prop"'
       
@@ -66,7 +66,7 @@ jobs:
           format: soap
           docker_name: 'owasp/zap2docker-stable'
           issue_title: 'ZAP Scan Report - GetROPReport Secure API'
-          target: '${{ secrets.JAG_CCD_UnSecureAPI_RouteUrl }}/ws/CCD.Source.GetROPReport.ws:GetROPReportSecure?WSDL'
+          target: '${{ secrets.JAG_JCI_SecureAPI_RouteUrl }}/ws/CCD.Source.GetROPReport.ws:GetROPReportSecure?WSDL'
           fail_action: false
           cmd_options: '-c "zaprules.conf" -S -z "-configFile /zap/wrk/zapoptions_secureapi.prop"'
       
@@ -77,6 +77,6 @@ jobs:
           format: soap
           docker_name: 'owasp/zap2docker-stable'
           issue_title: 'ZAP Scan Report - GetDocument Secure API'
-          target: '${{ secrets.JAG_CCD_UnSecureAPI_RouteUrl }}/ws/CCD.Source.GetDocument.ws:GetDocumentSecure?WSDL'
+          target: '${{ secrets.JAG_JCI_SecureAPI_RouteUrl }}/ws/CCD.Source.GetDocument.ws:GetDocumentSecure?WSDL'
           fail_action: false
           cmd_options: '-c "zaprules.conf" -S -z "-configFile /zap/wrk/zapoptions_secureapi.prop"'
