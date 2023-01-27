@@ -20,6 +20,7 @@ jobs:
       BASIC_AUTH_PASS: ${{ secrets.BASIC_AUTH_PASS }}
       GENERIC_AGENCY_ID: ${{secrets.GENERIC_AGENCY_ID}}
       GENERIC_PART_ID: ${{secrets.GENERIC_PART_ID}}
+      FORM_PARAM_IDX: ${{secrets.FORM_PARAM_IDX}}
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
