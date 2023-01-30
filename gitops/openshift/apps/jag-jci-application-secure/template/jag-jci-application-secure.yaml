@@ -2,7 +2,7 @@ apiVersion: template.openshift.io/v1
 kind: Template
 metadata:
   name: ${COMPONENT_NAME}
-  description: Deployment template for the JAG-JCI-1.2
+  description: Deployment template for the jag-jci-application-secure
   
 labels:
   app: ${COMPONENT_NAME}
@@ -25,7 +25,7 @@ parameters:
 - name: COMPONENT_NAME
   description: The application name
   required: false
-  value: jag-jci-1.2
+  value: jag-jci-application-secure
   
 - name: OC_NAMESPACE
   description: The OpenShift namespace prefix
@@ -42,11 +42,6 @@ parameters:
   required: false
   value: java
 
-- name: API_NAME
-  description: The api/application name
-  required: false
-  value: jag-jci-1.2
-
 - name: DNS
   description: DNS of the application route
   required: false
@@ -55,7 +50,7 @@ parameters:
   
 objects:
 
-### JAG-jci-1.2 Deployment Config ###
+### JAG-JCI-APPLICATION-SECURE Deployment Config ###
 - apiVersion: apps.openshift.io/v1
   kind: DeploymentConfig
   metadata:
@@ -84,77 +79,11 @@ objects:
             imagePullPolicy: Always
             ports:
               - containerPort: 8080
-            env:
-            - name: BASIC_AUTH_USER
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: BASIC_AUTH_USER_SECURE
-            - name: BASIC_AUTH_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: BASIC_AUTH_PASS_SECURE
-            - name: SPRING_PROFILES_ACTIVE
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: SPRING_PROFILE
-            - name: SPLUNK_HTTP_URL
-              valueFrom:
-                secretKeyRef:
-                  name: jci-splunk-config
-                  key: SPLUNK_HTTP_URL
-            - name: FORM_PARAM_IDX
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: FORM_PARAM_IDX
-            - name: SPLUNK_TOKEN
-              valueFrom:
-                secretKeyRef:
-                  name: jci-splunk-config
-                  key: SPLUNK_TOKEN
-            - name: SPLUNK_INDEX
-              valueFrom:
-                secretKeyRef:
-                  name: jci-splunk-config
-                  key: SPLUNK_INDEX
-            - name: ORDS_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: ORDS_HOST
-            - name: ORDS_USERNAME
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: ORDS_USERNAME
-            - name: ORDS_PASSWORD
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: ORDS_PASSWORD
-            - name: GENERIC_AGENCY_ID
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: GENERIC_AGENCY_ID
-            - name: GENERIC_PART_ID
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: GENERIC_PART_ID
-            - name: ADOBE_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: ADOBE_HOST
-            - name: REPORT_APP_NAME
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: REPORT_APP_NAME
+            envFrom:
+            - secretRef:
+                name: jag-jci-secret
+            - secretRef:
+                name: jag-jci-splunk-config
             resources:
               limits:
                 cpu: 500m
@@ -201,7 +130,7 @@ objects:
             name: ${COMPONENT_NAME}:${OC_ENV}
   status: {}
 
-### JAG-JCI-1.2 Service ###
+### JAG-JCI-APPLICATION-SECURE Service ###
 - apiVersion: v1
   kind: Service
   metadata:
@@ -218,7 +147,7 @@ objects:
     sessionAffinity: None
     type: ClusterIP
 
-### JAG-JCI-1.2 Route ###
+### JAG-JCI-APPLICATION-SECURE Route ###
 - apiVersion: route.openshift.io/v1
   kind: Route
   metadata:
@@ -230,7 +159,7 @@ objects:
     # balance algorithm
     haproxy.router.openshift.io/balance: roundrobin
   spec:
-    host: ${API_NAME}-${OC_NAMESPACE}-${OC_ENV}.${DNS}
+    host: ${COMPONENT_NAME}-${OC_NAMESPACE}-${OC_ENV}.${DNS}
     to:
       kind: Service
       name: ${COMPONENT_NAME}

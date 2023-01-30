@@ -56,7 +56,7 @@ objects:
     name: ${COMPONENT_NAME}
     namespace: ${OC_NAMESPACE}-${OC_ENV}
     annotations:
-      app.openshift.io/connects-to: 'jag-jci, jag-jci-secure'
+      app.openshift.io/connects-to: 'jag-jci-application, jag-jci-application-secure'
 
   spec:
     completionDeadlineSeconds: 1200
@@ -79,42 +79,9 @@ objects:
             imagePullPolicy: Always
             ports:
               - containerPort: 8080
-            env:
-            - name: BASIC_AUTH_USER
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: BASIC_AUTH_USER
-            - name: BASIC_AUTH_USER_SECURE
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: BASIC_AUTH_USER_SECURE
-            - name: BASIC_AUTH_PASS
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: BASIC_AUTH_PASS
-            - name: BASIC_AUTH_PASS_SECURE
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: BASIC_AUTH_PASS_SECURE
-            - name: SPRING_PROFILES_ACTIVE
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: SPRING_PROFILE
-            - name: API_HOST
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: API_HOST
-            - name: API_HOST_SECURE
-              valueFrom:
-                secretKeyRef:
-                  name: jci-application-secrets
-                  key: API_HOST_SECURE
+            envFrom:
+            - secretRef:
+                name: jag-jci-secret
             resources:
               limits:
                 cpu: 500m
