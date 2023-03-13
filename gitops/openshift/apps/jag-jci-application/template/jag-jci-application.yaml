@@ -1,0 +1,172 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: ${COMPONENT_NAME}
+  description: Deployment template for the jag-jci-application
+  
+labels:
+  app: ${COMPONENT_NAME}
+  app.kubernetes.io/name: ${COMPONENT_NAME}
+  app.kubernetes.io/part-of: ${APP_NAME}
+  app.openshift.io/runtime: ${RUNTIME}
+  
+parameters:
+
+- name: APP_NAME
+  description: The application name that each component is part of
+  required: false
+  value: jag-jci
+
+- name: AUTH_HEADER
+  description: Basic http auth header
+  required: false
+  value: auth
+
+- name: COMPONENT_NAME
+  description: The application name
+  required: false
+  value: jag-jci-application
+  
+- name: OC_NAMESPACE
+  description: The OpenShift namespace prefix
+  required: false
+  # change the OC_Namespace value as per the cluster being used.
+  value: 52e74e
+  
+- name: OC_ENV
+  description: The OpenShift environment, ie dev, test or prod
+  required: true
+
+- name: RUNTIME
+  description: Runtime of the application
+  required: false
+  value: java
+
+- name: DNS
+  description: DNS of the application route
+  required: false
+  # Below value must be changed as per the DNS of openshift cluster used.
+  value: apps.silver.devops.gov.bc.ca
+  
+objects:
+
+### JAG-JCI-APPLICATION Deployment Config ###
+- apiVersion: apps.openshift.io/v1
+  kind: DeploymentConfig
+  metadata:
+    name: ${COMPONENT_NAME}
+    namespace: ${OC_NAMESPACE}-${OC_ENV}
+      
+  spec:
+    completionDeadlineSeconds: 1200
+    replicas: 1
+    selector:
+      name: ${COMPONENT_NAME}
+    strategy:
+      type: Rolling
+      maxSurge: 50%
+      maxUnavailable: 0
+    template:
+      metadata:
+        labels:
+          name: ${COMPONENT_NAME}
+      spec:
+        containers:
+          # Below Immage url must be changed as per gold cluster image stream
+          - image: >-
+              image-registry.openshift-image-registry.svc:5000/${OC_NAMESPACE}-tools/${COMPONENT_NAME}:${OC_ENV}
+            name: ${COMPONENT_NAME} 
+            imagePullPolicy: Always
+            ports:
+              - containerPort: 8080
+            envFrom:
+            - secretRef:
+                name: jag-jci-secret
+            - secretRef:
+                name: jag-jci-splunk-config
+            resources:
+              limits:
+                cpu: 500m
+                memory: 512Mi
+              requests:
+                cpu: 50m
+                memory: 256Mi
+            livenessProbe:
+              httpGet:
+                path: "/actuator/health"
+                port: 8080
+                scheme: HTTP
+                httpHeaders:
+                  - name: Authorization
+                    value: ${AUTH_HEADER}
+              initialDelaySeconds: 30
+              timeoutSeconds: 60
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+            readinessProbe:
+              httpGet:
+                path: "/actuator/health"
+                port: 8080
+                scheme: HTTP
+                httpHeaders:
+                  - name: Authorization
+                    value: ${AUTH_HEADER}
+              initialDelaySeconds: 10
+              timeoutSeconds: 60
+              periodSeconds: 10
+              successThreshold: 1
+              failureThreshold: 3
+    triggers:
+      - type: ConfigChange
+      - type: ImageChange
+        imageChangeParams:
+          automatic: true
+          containerNames:
+            - ${COMPONENT_NAME}
+          from:
+            kind: ImageStreamTag
+            namespace: ${OC_NAMESPACE}-tools
+            name: ${COMPONENT_NAME}:${OC_ENV}
+  status: {}
+
+### JAG-JCI-APPLICATION Service ###
+- apiVersion: v1
+  kind: Service
+  metadata:
+    name: ${COMPONENT_NAME}
+    namespace: ${OC_NAMESPACE}-${OC_ENV}
+  spec:
+    ports:
+      - name: http
+        protocol: TCP
+        port: 80
+        targetPort: 8080
+    selector:
+      name: ${COMPONENT_NAME}
+    sessionAffinity: None
+    type: ClusterIP
+
+### JAG-JCI-APPLICATION Route ###
+- apiVersion: route.openshift.io/v1
+  kind: Route
+  metadata:
+    name: ${COMPONENT_NAME}
+    namespace: ${OC_NAMESPACE}-${OC_ENV}
+  annotations:
+    # if we do not use sticky-session, disable_cookies needs to be true
+    haproxy.router.openshift.io/disable_cookies: "true"
+    # balance algorithm
+    haproxy.router.openshift.io/balance: roundrobin
+  spec:
+    host: ${COMPONENT_NAME}-${OC_NAMESPACE}-${OC_ENV}.${DNS}
+    to:
+      kind: Service
+      name: ${COMPONENT_NAME}
+      weight: 100
+    port:
+      targetPort: http
+    tls:
+      termination: edge
+      insecureEdgeTerminationPolicy: None
+    wildcardPolicy: None
