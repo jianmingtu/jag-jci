@@ -139,8 +139,7 @@ public class DocumentController {
                 log.info(
                         objectMapper.writeValueAsString(
                                 new RequestSuccessLog("Request Success", "getDocument")));
-                String correlationId = servletRequest.getHeader("x-correlation-id");
-                LogGetDocumentPerformance(startTime, correlationId);
+                LogGetDocumentPerformance(startTime, servletRequest.getHeader("x-correlation-id"));
                 return out;
             } catch (Exception ex) {
                 log.error(
