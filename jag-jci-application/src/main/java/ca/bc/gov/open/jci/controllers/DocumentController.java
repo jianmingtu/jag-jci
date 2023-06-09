@@ -44,6 +44,8 @@ public class DocumentController {
 
     private final HttpServletRequest servletRequest;
 
+    private static String CORRELATION_HEADER_NAME = "x-correlation-id";
+
     @Autowired
     public DocumentController(
             RestTemplate restTemplate,
@@ -76,12 +78,16 @@ public class DocumentController {
 
         HttpEntity<Map<String, String>> resp = null;
         LocalDateTime startTime = LocalDateTime.now();
+        HttpHeaders headers = new HttpHeaders();
+        if (servletRequest.getHeader(CORRELATION_HEADER_NAME) != null) {
+            headers.set(CORRELATION_HEADER_NAME, servletRequest.getHeader(CORRELATION_HEADER_NAME));
+        }
         try {
             resp =
                     restTemplate.exchange(
                             builder.build(true).toUri(),
                             HttpMethod.GET,
-                            new HttpEntity<>(new HttpHeaders()),
+                            new HttpEntity<>(headers),
                             new ParameterizedTypeReference<>() {});
         } catch (Exception ex) {
             log.error(
@@ -124,7 +130,7 @@ public class DocumentController {
                         restTemplate.exchange(
                                 new URI(url),
                                 HttpMethod.GET,
-                                new HttpEntity<>(new HttpHeaders()),
+                                new HttpEntity<>(headers),
                                 byte[].class);
 
                 String bs64 =
@@ -139,7 +145,8 @@ public class DocumentController {
                 log.info(
                         objectMapper.writeValueAsString(
                                 new RequestSuccessLog("Request Success", "getDocument")));
-                LogGetDocumentPerformance(startTime, servletRequest.getHeader("x-correlation-id"));
+                LogGetDocumentPerformance(
+                        startTime, servletRequest.getHeader(CORRELATION_HEADER_NAME));
                 return out;
             } catch (Exception ex) {
                 log.error(
