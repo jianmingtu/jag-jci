@@ -11,6 +11,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -29,6 +30,8 @@ import org.springframework.web.client.RestTemplate;
 @ActiveProfiles("test")
 public class DocumentControllerTests {
     @Autowired private ObjectMapper objectMapper;
+
+    @Mock private HttpServletRequest servletRequest;
 
     @Mock private RestTemplate restTemplate = new RestTemplate();
 
@@ -73,7 +76,8 @@ public class DocumentControllerTests {
                         Mockito.<Class<byte[]>>any()))
                 .thenReturn(responseEntity);
 
-        DocumentController documentController = new DocumentController(restTemplate, objectMapper);
+        DocumentController documentController =
+                new DocumentController(restTemplate, objectMapper, servletRequest);
         var resp = documentController.getDocument(req);
         Assertions.assertNotNull(resp);
     }

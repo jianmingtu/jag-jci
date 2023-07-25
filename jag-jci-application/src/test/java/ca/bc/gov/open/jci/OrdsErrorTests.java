@@ -19,6 +19,7 @@ import ca.bc.gov.open.jci.controllers.*;
 import ca.bc.gov.open.jci.court.one.GetCrtList;
 import ca.bc.gov.open.jci.exceptions.ORDSException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import javax.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
@@ -38,6 +39,8 @@ public class OrdsErrorTests {
     @Autowired private MockMvc mockMvc;
 
     @Autowired private ObjectMapper objectMapper;
+
+    @Mock private HttpServletRequest servletRequest;
 
     @Mock private RestTemplate restTemplate;
 
@@ -347,7 +350,8 @@ public class OrdsErrorTests {
 
     @Test
     public void testGetDocumentOrdsFail() {
-        DocumentController documentController = new DocumentController(restTemplate, objectMapper);
+        DocumentController documentController =
+                new DocumentController(restTemplate, objectMapper, servletRequest);
 
         GetDocument getDocument = new GetDocument();
         Document document = new Document();

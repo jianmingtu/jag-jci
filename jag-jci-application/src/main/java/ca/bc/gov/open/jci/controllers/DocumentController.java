@@ -13,7 +13,10 @@ import java.net.URI;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.Map;
+import javax.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -39,10 +42,18 @@ public class DocumentController {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
+    private final HttpServletRequest servletRequest;
+
+    private static String CORRELATION_HEADER_NAME = "x-correlation-id";
+
     @Autowired
-    public DocumentController(RestTemplate restTemplate, ObjectMapper objectMapper) {
+    public DocumentController(
+            RestTemplate restTemplate,
+            ObjectMapper objectMapper,
+            HttpServletRequest servletRequest) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.servletRequest = servletRequest;
     }
 
     @PayloadRoot(
@@ -66,12 +77,17 @@ public class DocumentController {
                         .queryParam("courtDivisionCd", inner.getCourtDivisionCd());
 
         HttpEntity<Map<String, String>> resp = null;
+        LocalDateTime startTime = LocalDateTime.now();
+        HttpHeaders headers = new HttpHeaders();
+        if (servletRequest.getHeader(CORRELATION_HEADER_NAME) != null) {
+            headers.set(CORRELATION_HEADER_NAME, servletRequest.getHeader(CORRELATION_HEADER_NAME));
+        }
         try {
             resp =
                     restTemplate.exchange(
                             builder.build(true).toUri(),
                             HttpMethod.GET,
-                            new HttpEntity<>(new HttpHeaders()),
+                            new HttpEntity<>(headers),
                             new ParameterizedTypeReference<>() {});
         } catch (Exception ex) {
             log.error(
@@ -114,7 +130,7 @@ public class DocumentController {
                         restTemplate.exchange(
                                 new URI(url),
                                 HttpMethod.GET,
-                                new HttpEntity<>(new HttpHeaders()),
+                                new HttpEntity<>(headers),
                                 byte[].class);
 
                 String bs64 =
@@ -129,6 +145,8 @@ public class DocumentController {
                 log.info(
                         objectMapper.writeValueAsString(
                                 new RequestSuccessLog("Request Success", "getDocument")));
+                LogGetDocumentPerformance(
+                        startTime, servletRequest.getHeader(CORRELATION_HEADER_NAME));
                 return out;
             } catch (Exception ex) {
                 log.error(
@@ -151,5 +169,14 @@ public class DocumentController {
                                 "Either response or its body is null while receiving the request getDocument's response.",
                                 inner)));
         throw new ORDSException();
+    }
+
+    private static void LogGetDocumentPerformance(LocalDateTime start, String correlationId) {
+        Duration duration = Duration.between(start, LocalDateTime.now());
+        log.info(
+                "GetDocument Performance - Duration:"
+                        + duration.toMillis() / 1000.0
+                        + " CorrelationId:"
+                        + correlationId);
     }
 }
