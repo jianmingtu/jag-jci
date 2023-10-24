@@ -19,7 +19,7 @@ import ca.bc.gov.open.jci.controllers.*;
 import ca.bc.gov.open.jci.court.one.GetCrtList;
 import ca.bc.gov.open.jci.exceptions.ORDSException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
