@@ -35,7 +35,6 @@
         <module>jci-civil-secure-models</module>
         <module>jci-common-models</module>
         <module>jci-court-list-secure-models</module>
-        <module>AutomatedTests</module>
         <module>comparison-tool</module>
     </modules>
 
