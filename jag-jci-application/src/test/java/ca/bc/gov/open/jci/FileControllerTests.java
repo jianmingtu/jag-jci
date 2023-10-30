@@ -36,9 +36,12 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -48,12 +51,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FileControllerTests {
-    @Autowired private ObjectMapper objectMapper;
+    @Mock private ObjectMapper objectMapper;
+    @Mock private RestTemplate restTemplate;
+    @Mock private FileController fileController;
 
-    @Mock private RestTemplate restTemplate = new RestTemplate();
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        fileController = Mockito.spy(new FileController(restTemplate, objectMapper));
+    }
 
     @Test
     public void getCriminalFileContentTest() throws JsonProcessingException {
@@ -191,7 +199,6 @@ public class FileControllerTests {
                         Mockito.<Class<GetCriminalFileContentResponse>>any()))
                 .thenReturn(responseEntity);
 
-        FileController fileController = new FileController(restTemplate, objectMapper);
         var resp = fileController.getCriminalFileContent(req);
 
         Assertions.assertNotNull(resp);
@@ -368,7 +375,6 @@ public class FileControllerTests {
                         Mockito.<Class<GetCivilFileContentResponse>>any()))
                 .thenReturn(responseEntity);
 
-        FileController fileController = new FileController(restTemplate, objectMapper);
         var resp = fileController.getCivilFileContent(req);
 
         Assertions.assertNotNull(resp);

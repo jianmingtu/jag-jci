@@ -9,9 +9,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Instant;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -21,12 +24,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ProcessControllerTests {
-    @Autowired private ObjectMapper objectMapper;
+    @Mock private ObjectMapper objectMapper;
+    @Mock private RestTemplate restTemplate;
+    @Mock private ProcessController processController;
 
-    @Mock private RestTemplate restTemplate = new RestTemplate();
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        processController = Mockito.spy(new ProcessController(restTemplate, objectMapper));
+    }
 
     @Test
     public void processVariationTest() throws JsonProcessingException {
@@ -72,7 +80,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessVariationResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processVariation(req);
 
         Assertions.assertNotNull(resp);
@@ -122,7 +129,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessSpeakerResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processSpeaker(req);
 
         Assertions.assertNotNull(resp);
@@ -244,7 +250,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessCivilResultsResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processCivilResults(req);
 
         Assertions.assertNotNull(resp);
@@ -302,7 +307,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessAppearanceMethodResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processAppearanceMethod(req);
 
         Assertions.assertNotNull(resp);
@@ -353,7 +357,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessPleaResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processPlea(req);
 
         Assertions.assertNotNull(resp);
@@ -399,7 +402,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessElectionResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processElection(req);
 
         Assertions.assertNotNull(resp);
@@ -461,7 +463,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessBailResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processBail(req);
 
         Assertions.assertNotNull(resp);
@@ -542,7 +543,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessCriminalResultResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processCriminalResult(req);
 
         Assertions.assertNotNull(resp);
@@ -597,7 +597,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessAgeNoticeResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processAgeNotice(req);
 
         Assertions.assertNotNull(resp);
@@ -647,7 +646,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessMatterCallResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processMatterCall(req);
 
         Assertions.assertNotNull(resp);
@@ -729,7 +727,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessSentenceResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processSentence(req);
 
         Assertions.assertNotNull(resp);
@@ -785,7 +782,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessBanResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processBan(req);
 
         Assertions.assertNotNull(resp);
@@ -828,7 +824,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessNoteResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processNote(req);
 
         Assertions.assertNotNull(resp);
@@ -878,7 +873,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessArraignmentResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processArraignment(req);
 
         Assertions.assertNotNull(resp);
@@ -923,7 +917,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessMoveResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processMove(req);
 
         Assertions.assertNotNull(resp);
@@ -973,7 +966,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessFindingResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processFinding(req);
 
         Assertions.assertNotNull(resp);
@@ -1023,7 +1015,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessGenericResultResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processGenericResult(req);
 
         Assertions.assertNotNull(resp);
@@ -1091,7 +1082,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessCivilAppearanceMethodResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processCivilAppearanceMethod(req);
 
         Assertions.assertNotNull(resp);
@@ -1146,7 +1136,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessOrderResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processOrder(req);
 
         Assertions.assertNotNull(resp);
@@ -1235,7 +1224,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessCivilOrderResultResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processCivilOrderResult(req);
 
         Assertions.assertNotNull(resp);
@@ -1293,7 +1281,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessExhibitResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processExhibit(req);
 
         Assertions.assertNotNull(resp);
@@ -1338,7 +1325,6 @@ public class ProcessControllerTests {
                         Mockito.<Class<ProcessSpecialCourtResponse>>any()))
                 .thenReturn(responseEntity);
 
-        ProcessController processController = new ProcessController(restTemplate, objectMapper);
         var resp = processController.processSpecialCourt(req);
 
         Assertions.assertNotNull(resp);
