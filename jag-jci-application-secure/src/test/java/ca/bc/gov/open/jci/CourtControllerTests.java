@@ -11,9 +11,12 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -23,13 +26,18 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class CourtControllerTests {
 
-    @Autowired private ObjectMapper objectMapper;
+    @Mock private ObjectMapper objectMapper;
+    @Mock private RestTemplate restTemplate;
+    @Mock private CourtController courtController;
 
-    @Mock private RestTemplate restTemplate = new RestTemplate();
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        courtController = Mockito.spy(new CourtController(restTemplate, objectMapper));
+    }
 
     @Test
     public void getCrtListSecureTest() throws JsonProcessingException {
@@ -84,7 +92,7 @@ public class CourtControllerTests {
         is.setStatuteActCd("A");
         is.setStatuteSectionCd("A");
         is.setStatuteSectionDsc("A");
-        fi.setIssue(Collections.singletonList(is));
+        fi.getIssue().add(is);
 
         crl.setFileInformation(fi);
 
@@ -124,7 +132,7 @@ public class CourtControllerTests {
         at.setPhoneNumber("A");
         at.setInstruction("A");
         at.setOtherRoleName("A");
-        crl.setAttendanceMethod(Collections.singletonList(at));
+        crl.getAttendanceMethod().add(at);
 
         var ac = new ca.bc.gov.open.jci.court.secure.one.AppearanceCount();
         ac.setAppearanceCountId("A");
@@ -147,7 +155,7 @@ public class CourtControllerTests {
         ac.setFindingCode("A");
         ac.setFindingDate(Instant.now());
 
-        crl.setAppearanceCount(Collections.singletonList(ac));
+        crl.getAppearanceCount().add(ac);
 
         var bn = new ca.bc.gov.open.jci.court.secure.one.Bans();
         bn.setBanTypeCd("A");
@@ -158,7 +166,7 @@ public class CourtControllerTests {
         bn.setBanStatuteId("A");
         bn.setBanCommentText("A");
         bn.setBanAcprId("A");
-        crl.setBans(Collections.singletonList(bn));
+        crl.getBans().add(bn);
 
         var bov = new ca.bc.gov.open.jci.court.secure.one.BailOrderToVary();
         bov.setFormTypeCd("A");
@@ -167,7 +175,7 @@ public class CourtControllerTests {
         bov.setDocmIssueDate(Instant.now());
         bov.setDocmImageId("A");
         bov.setDocmStatus("A");
-        crl.setBailOrderToVary(Collections.singletonList(bov));
+        crl.getBailOrderToVary().add(bov);
 
         var sov = new ca.bc.gov.open.jci.court.secure.one.SentOrderToVary();
         sov.setFormTypeCd("A");
@@ -176,7 +184,7 @@ public class CourtControllerTests {
         sov.setDocmIssueDate(Instant.now());
         sov.setDocmImageId("A");
         sov.setDocmStatus("A");
-        crl.setSentOrderToVary(Collections.singletonList(sov));
+        crl.getSentOrderToVary().add(sov);
 
         var an = new ca.bc.gov.open.jci.court.secure.one.AgeNotice();
         an.setEventDate(Instant.now());
@@ -187,7 +195,7 @@ public class CourtControllerTests {
         an.setProvenBy("A");
         an.setNoticeTo("A");
 
-        crl.setAgeNotice(Collections.singletonList(an));
+        crl.getAgeNotice().add(an);
 
         var st = new ca.bc.gov.open.jci.court.secure.one.SpeakerType();
         st.setSpeakerId("A");
@@ -202,19 +210,19 @@ public class CourtControllerTests {
         se.setSpeakerEventTime("A");
         se.setSpeakerEventText("A");
 
-        st.setSpeakerEvent(Collections.singletonList(se));
-        crl.setSpeaker(Collections.singletonList(st));
+        st.getSpeakerEvent().add(se);
+        crl.getSpeaker().add(st);
 
         var aw = new ca.bc.gov.open.jci.court.secure.one.ArrestWarrant();
         aw.setFileNumberText("A");
         aw.setWarrantDate(Instant.now());
-        crl.setArrestWarrant(Collections.singletonList(aw));
+        crl.getArrestWarrant().add(aw);
 
         var crp = new ca.bc.gov.open.jci.court.secure.one.CRProtectionOrderType();
         crp.setPORConditionText("A");
         crp.setOrderTypeDsc("A");
         crp.setPOROrderIssueDate(Instant.now());
-        crl.setProtectionOrder(Collections.singletonList(crp));
+        crl.getProtectionOrder().add(crp);
 
         var sa = new ca.bc.gov.open.jci.court.secure.one.ScheduledAppearance();
         sa.setAppearanceId("A");
@@ -231,15 +239,15 @@ public class CourtControllerTests {
         hr.setJudgeName("A");
         hr.setHearingRestrictionDate(Instant.now());
 
-        crl.setHearingRestriction(Collections.singletonList(hr));
-        crl.setScheduledAppearance(Collections.singletonList(sa));
+        crl.getHearingRestriction().add(hr);
+        crl.getScheduledAppearance().add(sa);
 
         var co = new ca.bc.gov.open.jci.court.secure.one.CFCOrderType();
         co.setCFCOrderIssueDate(Instant.now());
         co.setOrderTypeDsc("A");
         co.setCFCConditionText("A");
 
-        crl.setCFCOrder(Collections.singletonList(co));
+        crl.getCFCOrder().add(co);
 
         var crl2 = new ca.bc.gov.open.jci.court.secure.one.CivilCourtListType();
         crl2.setAppearanceId("A");
@@ -279,7 +287,7 @@ public class CourtControllerTests {
 
         var as = new ca.bc.gov.open.jci.court.secure.one.AssetType();
         as.setAssetTypeDescription("A");
-        crl2.setAsset(Collections.singletonList(as));
+        crl2.getAsset().add(as);
 
         var dt = new ca.bc.gov.open.jci.court.secure.one.DocumentType();
         dt.setAppearanceID("A");
@@ -305,13 +313,13 @@ public class CourtControllerTests {
         is2.setIssueDescription("A");
         is2.setIssueType("A");
         is2.setIssueNumber("A");
-        dt.setIssue(Collections.singletonList(is2));
+        dt.getIssue().add(is2);
 
         var ft = new ca.bc.gov.open.jci.court.secure.one.FiledByType();
         ft.setFiledByName("A");
         ft.setRoleTypeCode("A");
-        dt.setFiledBy(Collections.singletonList(ft));
-        crl2.setDocument(Collections.singletonList(dt));
+        dt.getFiledBy().add(ft);
+        crl2.getDocument().add(dt);
 
         var pt = new ca.bc.gov.open.jci.court.secure.one.PartyType();
         pt.setPartyId("A");
@@ -332,25 +340,25 @@ public class CourtControllerTests {
         ct.setPhoneNumber("A");
         ct.setCounselId("A");
 
-        pt.setCounsel(Collections.singletonList(ct));
+        pt.getCounsel().add(ct);
 
         var rt = new ca.bc.gov.open.jci.court.secure.one.RepresentativeType();
         rt.setInstruction("A");
         rt.setAttendanceMethodCd("A");
         rt.setPhoneNumber("A");
         rt.setRepFullName("A");
-        pt.setRepresentative(Collections.singletonList(rt));
+        pt.getRepresentative().add(rt);
 
         var lrt = new ca.bc.gov.open.jci.court.secure.one.LegalRepresentativeType();
         lrt.setLegalRepFullName("A");
         lrt.setLegalRepTypeDsc("A");
-        pt.setLegalRepresentative(Collections.singletonList(lrt));
+        pt.getLegalRepresentative().add(lrt);
 
         var pr2 = new ca.bc.gov.open.jci.court.secure.one.PartyRoleType2();
         pr2.setRoleTypeCd("A");
         pr2.setRoleTypeDsc("A");
 
-        pt.setPartyRole(Collections.singletonList(pr2));
+        pt.getPartyRole().add(pr2);
 
         var pnt = new ca.bc.gov.open.jci.court.secure.one.PartyNameType();
         pnt.setFirstGivenNm("A");
@@ -361,9 +369,9 @@ public class CourtControllerTests {
         pnt.setSecondGivenNm("A");
         pnt.setThirdGivenNm("A");
         pnt.setOrganizationNm("A");
-        pt.setPartyName(Collections.singletonList(pnt));
+        pt.getPartyName().add(pnt);
 
-        crl2.setParties(Collections.singletonList(pt));
+        crl2.getParties().add(pt);
 
         var st2 = new ca.bc.gov.open.jci.court.secure.one.SpeakerType();
         st2.setSpeakerId("A");
@@ -377,7 +385,7 @@ public class CourtControllerTests {
         se2.setSpeakerEventText("A");
         se2.setSpeakerEventDate("A");
         se2.setSpeakerEventTime("A");
-        st2.setSpeakerEvent(Collections.singletonList(se2));
+        st2.getSpeakerEvent().add(se2);
 
         var pot = new ca.bc.gov.open.jci.court.secure.one.ProtectionOrderType();
         pot.setPOROrderIssueDate(Instant.now());
@@ -388,10 +396,10 @@ public class CourtControllerTests {
         rpt.setRestrainingPartyName("A");
         var ppt = new ca.bc.gov.open.jci.court.secure.one.ProtectedPartyNameType();
         ppt.setProtectedPartyName("A");
-        pot.setRestrainingPartyName(Collections.singletonList(rpt));
-        pot.setProtectedPartyName(Collections.singletonList(ppt));
+        pot.getRestrainingPartyName().add(rpt);
+        pot.getProtectedPartyName().add(ppt);
 
-        crl2.setProtectionOrder(Collections.singletonList(pot));
+        crl2.getProtectionOrder().add(pot);
 
         var sat = new ca.bc.gov.open.jci.court.secure.one.ScheduledAppearanceType();
         sat.setAppearanceId("A");
@@ -403,19 +411,19 @@ public class CourtControllerTests {
         sat.setEstDurationHours("A");
         sat.setEstDurationMins("A");
 
-        crl2.setScheduledAppearance(Collections.singletonList(sat));
+        crl2.getScheduledAppearance().add(sat);
 
         var hr2 = new ca.bc.gov.open.jci.court.secure.one.HearingRestrictionType();
         hr2.setHearingRestrictionDate(Instant.now());
         hr2.setJudgeName("A");
         hr2.setHearingRestrictionDate(Instant.now());
-        crl2.setHearingRestriction(Collections.singletonList(hr2));
+        crl2.getHearingRestriction().add(hr2);
 
         var caw = new ca.bc.gov.open.jci.court.secure.one.CivilArrestWarrantType();
         caw.setWarrantDate(Instant.now());
         caw.setWarrantTypeCd("A");
         caw.setWarrantTypeDsc("A");
-        crl2.setArrestWarrant(Collections.singletonList(caw));
+        crl2.getArrestWarrant().add(caw);
 
         var ud = new ca.bc.gov.open.jci.court.secure.one.UnscheduledDocumentType();
         ud.setDocumentId("A");
@@ -424,9 +432,9 @@ public class CourtControllerTests {
         var fb = new ca.bc.gov.open.jci.court.secure.one.FiledByType();
         fb.setRoleTypeCode("A");
         fb.setRoleTypeCode("A");
-        ud.setFiledBy(Collections.singletonList(fb));
+        ud.getFiledBy().add(fb);
 
-        crl2.setUnscheduledDocument(Collections.singletonList(ud));
+        crl2.getUnscheduledDocument().add(ud);
 
         var ov = new ca.bc.gov.open.jci.court.secure.one.OrderToVaryType();
         ov.setAdjudicatorName("A");
@@ -434,10 +442,10 @@ public class CourtControllerTests {
         ov.setDocumentId("A");
         ov.setDocumentTypeDsc("A");
 
-        crl2.setOrderToVary(Collections.singletonList(ov));
+        crl2.getOrderToVary().add(ov);
 
-        clt.setCivilCourtList(Collections.singletonList(crl2));
-        clt.setCriminalCourtList(Collections.singletonList(crl));
+        clt.getCivilCourtList().add(crl2);
+        clt.getCriminalCourtList().add(crl);
         out.setCourtLists(clt);
 
         ResponseEntity<GetCrtListSecureResponse> responseEntity =
@@ -451,7 +459,6 @@ public class CourtControllerTests {
                         Mockito.<Class<GetCrtListSecureResponse>>any()))
                 .thenReturn(responseEntity);
 
-        CourtController courtController = new CourtController(restTemplate, objectMapper);
         var resp = courtController.getCrtListSecure(req);
 
         Assertions.assertNotNull(resp);

@@ -14,9 +14,12 @@ import java.net.URI;
 import java.time.Instant;
 import java.util.Collections;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -26,12 +29,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class FileControllerTests {
-    @Autowired private ObjectMapper objectMapper;
+    @Mock private ObjectMapper objectMapper;
+    @Mock private RestTemplate restTemplate;
+    @Mock private FileController fileController;
 
-    @Mock private RestTemplate restTemplate = new RestTemplate();
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        fileController = Mockito.spy(new FileController(restTemplate, objectMapper));
+    }
 
     @Test
     public void getCriminalFileContentSecureTest() throws JsonProcessingException {
@@ -54,7 +62,7 @@ public class FileControllerTests {
         fc.setCourtLocaCd("A");
         fc.setCourtRoomCd("A");
         fc.setCourtProceedingDate(Instant.now());
-        fc.setAppearanceId(Collections.singletonList("A"));
+        fc.getAppearanceId().add("A");
         fc.setMdocJustinNo("A");
         var ac = new ca.bc.gov.open.jci.common.criminal.file.content.secure.AccusedFileType();
 
@@ -94,11 +102,11 @@ public class FileControllerTests {
         st.setSentYcjaAdultYouthCd("A");
         st.setSentCustodySecureYn("A");
 
-        act.setSentence(Collections.singletonList(st));
+        act.getSentence().add(st);
 
-        ap.setAppearanceCount(Collections.singletonList(act));
+        ap.getAppearanceCount().add(act);
 
-        ac.setAppearance(Collections.singletonList(ap));
+        ac.getAppearance().add(ap);
 
         ac.setFileNumber("A");
         ac.setFileLocaAgencyIdentifierCd("A");
@@ -116,7 +124,7 @@ public class FileControllerTests {
         var wt = new ca.bc.gov.open.jci.common.criminal.file.content.secure.ArrestWarrantType();
         wt.setFileNumberText("A");
         wt.setWarrantDate(Instant.now());
-        ac.setArrestWarrant(Collections.singletonList(wt));
+        ac.getArrestWarrant().add(wt);
 
         var bt = new ca.bc.gov.open.jci.common.criminal.file.content.secure.BanTypes();
         bt.setBanTypeCd("A");
@@ -128,26 +136,26 @@ public class FileControllerTests {
         bt.setBanCommentText("A");
         bt.setBanOrderedDate(Instant.now());
         bt.setBanSeqNo("A");
-        ac.setBan(Collections.singletonList(bt));
+        ac.getBan().add(bt);
 
         var pt = new ca.bc.gov.open.jci.common.criminal.file.content.secure.ProtectionOrderType();
         pt.setPOROrderIssueDate(Instant.now());
         pt.setOrderTypeDsc("A");
         pt.setPORConditionText("A");
-        ac.setProtectionOrder(Collections.singletonList(pt));
+        ac.getProtectionOrder().add(pt);
 
         var ct = new ca.bc.gov.open.jci.common.criminal.file.content.secure.CFCOrderType();
         ct.setCFCOrderIssueDate(Instant.now());
         ct.setCFCConditionText("A");
         ct.setOrderTypeDsc("A");
-        ac.setCFCOrder(Collections.singletonList(ct));
+        ac.getCFCOrder().add(ct);
 
         var ht =
                 new ca.bc.gov.open.jci.common.criminal.file.content.secure.HearingRestrictionType();
         ht.setHearingRestrictiontype("A");
         ht.setJudgeName("A");
         ht.setHearingRestrictionDate(Instant.now());
-        ac.setHearingRestriction(Collections.singletonList(ht));
+        ac.getHearingRestriction().add(ht);
 
         var dt = new ca.bc.gov.open.jci.common.criminal.file.content.secure.DocumentType();
         dt.setDocmClassification("A");
@@ -159,7 +167,7 @@ public class FileControllerTests {
         dt.setDocmDispositionDate(Instant.now());
         dt.setImageId("A");
         dt.setDocumentPageCount("A");
-        ac.setDocument(Collections.singletonList(dt));
+        ac.getDocument().add(dt);
 
         AppearanceTypes at = new AppearanceTypes();
         at.setAppearanceId("A");
@@ -203,15 +211,15 @@ public class FileControllerTests {
         st2.setSentDetailTxt("A");
         st2.setSentYcjaAdultYouthCd("A");
         st2.setSentCustodySecureYn("A");
-        apc.setSentence(Collections.singletonList(st2));
-        at.setAppearanceCount(Collections.singletonList(apc));
+        apc.getSentence().add(st2);
+        at.getAppearanceCount().add(apc);
 
         PartyAppearanceMethodType pmt = new PartyAppearanceMethodType();
         pmt.setPartyName("A");
         pmt.setPartyRole("A");
         pmt.setPartId("A");
         pmt.setPartyAppearanceMethod("A");
-        at.setPartyAppearanceMethod(Collections.singletonList(pmt));
+        at.getPartyAppearanceMethod().add(pmt);
 
         out.setFileContent(fc);
 
@@ -226,7 +234,6 @@ public class FileControllerTests {
                         Mockito.<Class<GetCriminalFileContentSecureResponse>>any()))
                 .thenReturn(responseEntity);
 
-        FileController fileController = new FileController(restTemplate, objectMapper);
         var resp = fileController.getCriminalFileContentSecure(req);
 
         Assertions.assertNotNull(resp);
@@ -253,7 +260,7 @@ public class FileControllerTests {
         doc.setCourtLocaCd("A");
         doc.setCourtRoomCd("A");
         doc.setCourtProceedingDate(Instant.now());
-        doc.setAppearanceId(Collections.singletonList("A"));
+        doc.getAppearanceId().add("A");
         doc.setPhysicalFileId("A");
 
         out.setCivilFileContentDoc(doc);
@@ -269,7 +276,6 @@ public class FileControllerTests {
                         Mockito.<Class<GetCivilFileContentSecureResponse>>any()))
                 .thenReturn(responseEntity);
 
-        FileController fileController = new FileController(restTemplate, objectMapper);
         var resp = fileController.getCivilFileContentSecure(req);
 
         Assertions.assertNotNull(resp);
