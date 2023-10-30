@@ -12,6 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.provisioning.InMemoryUserDetailsManager;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @EnableWebSecurity
 @Configuration
@@ -29,7 +30,9 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(
                 authorizeRequests -> {
-                    authorizeRequests.anyRequest().authenticated();
+                    authorizeRequests
+                        .requestMatchers(new AntPathRequestMatcher("/error")).permitAll()
+                        .anyRequest().authenticated();
                 });
 
         http.sessionManagement(
