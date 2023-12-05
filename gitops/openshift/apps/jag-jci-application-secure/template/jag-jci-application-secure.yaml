@@ -86,11 +86,11 @@ objects:
                 name: jag-jci-splunk-config
             resources:
               limits:
-                cpu: 500m
-                memory: 512Mi
+                cpu: 768m
+                memory: 3Gi
               requests:
-                cpu: 50m
-                memory: 256Mi
+                cpu: 128m
+                memory: 2Gi
             livenessProbe:
               httpGet:
                 path: "/actuator/health"

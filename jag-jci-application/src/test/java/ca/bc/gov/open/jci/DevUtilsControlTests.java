@@ -10,9 +10,12 @@ import ca.bc.gov.open.jci.controllers.DevUtilsController;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.HttpEntity;
@@ -22,12 +25,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.web.client.RestTemplate;
 
-@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles("test")
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class DevUtilsControlTests {
-    @Autowired private ObjectMapper objectMapper;
+    @Mock private ObjectMapper objectMapper;
+    @Mock private RestTemplate restTemplate;
+    @Mock private DevUtilsController devUtilsController;
 
-    @Mock private RestTemplate restTemplate = new RestTemplate();
+    @BeforeEach
+    public void setUp() {
+        MockitoAnnotations.openMocks(this);
+        devUtilsController = Mockito.spy(new DevUtilsController(restTemplate, objectMapper));
+    }
 
     @Test
     public void clearAppearanceResultsTest() throws JsonProcessingException {
@@ -48,7 +56,6 @@ public class DevUtilsControlTests {
                         Mockito.<Class<ClearAppearanceResultsResponse>>any()))
                 .thenReturn(responseEntity);
 
-        DevUtilsController devUtilsController = new DevUtilsController(restTemplate, objectMapper);
         var resp = devUtilsController.clearAppearanceResults(req);
 
         Assertions.assertNotNull(resp);
@@ -73,7 +80,6 @@ public class DevUtilsControlTests {
                         Mockito.<Class<RecreateCourtListResponse>>any()))
                 .thenReturn(responseEntity);
 
-        DevUtilsController devUtilsController = new DevUtilsController(restTemplate, objectMapper);
         var resp = devUtilsController.reCreateCourtList(req);
 
         Assertions.assertNotNull(resp);
