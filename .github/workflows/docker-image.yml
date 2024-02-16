@@ -15,3 +15,14 @@ jobs:
     steps:
     - name: Build the Docker image
       run: docker pull nginx:alpine
+      
+    - name: Run Trivy vulnerability scanner for jag-jci-application image
+      uses: aquasecurity/trivy-action@master
+      with:
+        scan-type: image
+        image-ref: nginx:alpine
+        format: 'table'
+        exit-code: 0
+        ignore-unfixed: true
+        severity: HIGH,CRITICAL
+        timeout: 15m
